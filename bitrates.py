@@ -36,7 +36,7 @@ for x in regx:                                              #for every ep S0xE0x
     regx[x] = ( sorted(eps, key=lambda x: x[1]) [:-3] )     #regx['S0xE0x'] = (file-name1.mp4, bitrate,
                                                                               #file-name2.mp4, bitrate,
                                                                               #file-name3.mp4, bitrate)
-                                                                              #sorted by bitrate
+                                                                              #asc sorted by bitrate at [:-3]
     for i in regx[x]:
         os.remove(i[0])    
     eps.clear()                                             #clear the eps of shards from ep x in regx
@@ -59,13 +59,18 @@ for key in regx:                                              #go through unique
     for shard in shards:
         if key in shard:
             eps.append( bitrate(shard) )                      #make a list of every S0XE0X episode shards' bitrate
-    regx[key] = statistics.mean(eps) // 1 + 100               #avg bitrate for top 3 shards, for this episode
+    regx[key] = int(statistics.mean(eps) + 100)               #avg bitrate for top 3 shards, for this episode
     eps.clear()
 
-os.chdir('..\\')
+os.chdir('..\\..\\')
 gather('mkv')
 
 
-for i,file in enumerate(shards):
-    subprocess.call('ffmpeg -hide_banner -loglevel quiet -stats -an -y -i \"'+file+'\" -c:v libx265 -x265-params pass=1 -f null NUL ')
-    subprocess.call('ffmpeg -hide_banner -loglevel quiet -stats -i \"'+file+'\" -c:v libx265 -b:v '+regx[i]+' -x265-params pass=2 -c:a aac -b:a 128k \"new_'+file+'\"')
+for ep in regx:
+    for i in shards:
+        if ep in i:
+            #print(
+            command = str(
+                'cmd ffmpeg -hide_banner -loglevel quiet -stats -an -as -y -i \"D:\\lol\\x265\\' + i + '\" -c:v libx265 -b:v ' + str(regx[ep]) + ' -x265-params pass=1 -f null NUL' + ' && ' + 'ffmpeg -hide_banner -loglevel quiet -stats -i \"D:\\lol\\x265\\' + i + '\" -c:v libx265 -b:v ' + str(regx[ep]) + ' -x265-params pass=2 -c:a aac -b:a 128k \"D:\\lol\\x265\\new_' + i + '\"')
+            os.system(command)
+            # subprocess.run(['cmd','command'])
