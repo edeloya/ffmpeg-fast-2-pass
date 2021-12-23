@@ -12,7 +12,8 @@ def gather(ext):                                            #checks for EXT, cre
     if os.path.isdir('tmp') == False:
         os.mkdir('tmp')
 
-os.chdir('D:\\lol\\x265') # os.chdir(os.path.dirname(os.path.abspath(__file__)))
+pydir = os.path.dirname(os.path.abspath(__name__))
+os.chdir(pydir)
 shards, eps = [], []
 regx = {}
 gather('mkv')
@@ -69,8 +70,7 @@ gather('mkv')
 for ep in regx:
     for i in shards:
         if ep in i:
-            #print(
             command = str(
-                'cmd ffmpeg -hide_banner -loglevel quiet -stats -an -as -y -i \"D:\\lol\\x265\\' + i + '\" -c:v libx265 -b:v ' + str(regx[ep]) + ' -x265-params pass=1 -f null NUL' + ' && ' + 'ffmpeg -hide_banner -loglevel quiet -stats -i \"D:\\lol\\x265\\' + i + '\" -c:v libx265 -b:v ' + str(regx[ep]) + ' -x265-params pass=2 -c:a aac -b:a 128k \"D:\\lol\\x265\\new_' + i + '\"')
+                'ffmpeg -hide_banner -loglevel quiet -stats -an -sn -y -i \"' + os.path.abspath(i) + '\" -c:v libx265 -b:v ' + str(regx[ep]) + ' -x265-params pass=1 -f null NUL && ffmpeg -hide_banner -loglevel quiet -stats -i "' + os.path.abspath(i) + '" -c:v libx265 -b:v ' + str(regx[ep]) + ' -x265-params pass=2 -c:a aac -b:a 128k \"' + pydir + '\\new_' + i + '\"')
             os.system(command)
-            # subprocess.run(['cmd','command'])
+            
