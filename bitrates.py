@@ -71,6 +71,7 @@ for ep in regx:
     for i in shards:
         if ep in i:
             command = str(
-                'ffmpeg -hide_banner -loglevel quiet -stats -an -sn -y -i \"' + os.path.abspath(i) + '\" -c:v libx265 -b:v ' + str(regx[ep]) + ' -x265-params pass=1 -f null NUL && ffmpeg -hide_banner -loglevel quiet -stats -i "' + os.path.abspath(i) + '" -c:v libx265 -b:v ' + str(regx[ep]) + ' -x265-params pass=2 -c:a aac -b:a 128k \"' + pydir + '\\new_' + i + '\"')
+                'ffmpeg -hide_banner -loglevel quiet -stats -an -sn -y -i \"' + os.path.abspath(i) + '\" -c:v libx265 -b:v ' + str(regx[ep]) + ' -x265-params pass=1 -f null NUL && ffmpeg -hide_banner -loglevel quiet -stats -y -i "' + os.path.abspath(i) + '" -c:v libx265 -b:v ' + str(regx[ep]) + ' -x265-params pass=2 -c:a aac -b:a 128k \"' + pydir + '\\new_' + i + '\"')
+            print(command)
+            print()
             os.system(command)
-            
