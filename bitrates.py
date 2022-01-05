@@ -85,7 +85,8 @@ for ep in regx:
             pass1 = 'ffmpeg -hide_banner -loglevel quiet -stats -an -sn -y -i \"' + pydir + '\\' + i + '\" -c:v libx265 -b:v ' + s_bitrate + 'K -x265-params pass=1 -f null NUL'
             pass2 = str(
                 'ffmpeg -hide_banner -loglevel quiet -stats -y -i \"' + pydir + '\\' + i + '\" -c:v libx265 -b:v ' + s_bitrate + 'K -x265-params pass=2 -c:a libopus -b:a 192k \"' + pydir + '\\new\\' + i + '\"')
-            print('\n\n\nBitrate for '+ i + ' is: ' + s_bitrate)
+            with open('bit.list', 'w') as file:
+                file.write('\n\n\nBitrate for '+ i + ' is: ' + s_bitrate)
             print('\nRunning with command:\n'+pass1+'\n\n')
             os.system(pass1)
             print('\nRunning with command:\n'+pass2+'\n\n')
