@@ -2,7 +2,7 @@ import os, subprocess, re, collections, pprint, ffmpeg, statistics
 from pymkv import MKVFile
 
 def bitrate(X):                                             #parse file BITRATE
-    return int(ffmpeg.probe(X)['format']['bit_rate']) // 1000
+    return int(ffmpeg.probe(X)['format']['bit_rate'])
 
 def gather(ext):                                            #checks for EXT, creates tmp directory for working files
     shards.clear()
