@@ -71,7 +71,6 @@ for key in regx:                                                #go through uniq
         if key in file:
             eps.append( bitrate(file) )                         #make a list of every S0XE0X episode temp' bitrate
     regx[key] = int(statistics.mean(eps))+100                   #avg bitrate for top 3 temp, for this episode
-    eps.clear()
 
 os.chdir(pydir)
 gather(filetype)
