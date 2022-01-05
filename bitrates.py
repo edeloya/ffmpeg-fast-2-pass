@@ -2,7 +2,7 @@ import os, subprocess, re, collections, pprint, ffmpeg, statistics
 from pymkv import MKVFile
 
 def bitrate(X):                                             #parse file BITRATE
-    return int(ffmpeg.probe(X)['format']['bit_rate'])
+    return int(ffmpeg.probe(X)['format']['bit_rate']) // 1000
 
 def gather(ext):                                            #checks for EXT, creates tmp directory for working files
     shards.clear()
@@ -68,14 +68,18 @@ for key in regx:                                              #go through unique
 os.chdir('..\\..\\')
 gather(filetype)
 
+if os.path.isdir('new') == False:
+        os.mkdir('new')
+
+os.chdir('new')
 
 for ep in regx:
     for i in shards:
         if ep in i:
             s_bitrate = str(regx[ep])
-            pass1 = 'ffmpeg -hide_banner -loglevel quiet -stats -an -sn -y -i \"' + os.path.abspath(i) + '\" -c:v libx265 -b:v ' + s_bitrate + ' -x265-params pass=1 -f null NUL'
+            pass1 = 'ffmpeg -hide_banner -loglevel quiet -stats -an -sn -y -i \"' + os.path.abspath(i) + '\" -c:v libx265 -b:v ' + s_bitrate + 'K -x265-params pass=1 -f null NUL'
             pass2 = str(
-                'ffmpeg -hide_banner -loglevel quiet -stats -y -i "' + os.path.abspath(i) + '" -c:v libx265 -b:v ' + s_bitrate + ' -x265-params pass=2 -c:a aac -b:a 128k \"' + pydir + '\\new_' + i + '\"')
+                'ffmpeg -hide_banner -loglevel quiet -stats -y -i "' + os.path.abspath(i) + '" -c:v libx265 -b:v ' + s_bitrate + 'K -x265-params pass=2 -c:a aac -b:a 128k \"' + pydir + '\\new_' + i + '\"')
             print('\n\nBitrate for '+ i + ' is: ' + s_bitrate)
             print('Running with command:\n'+pass1+'\n\n')
             os.system(pass1)
