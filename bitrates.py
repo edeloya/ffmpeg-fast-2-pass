@@ -40,7 +40,9 @@ for file in dirlist:
 for x in regx:                                              #for every ep S0xE0x,
     for i in dirlist:                                          #for every shard '<filename>-0xx.ext',
         if x in i:                                          #if ep S0xE0x is found in any temp, 
-            eps.append( (i,bitrate(i)) )                    #add em to working list for this loop
+            eps.append( (i, bitrate(i)) )                    #add em to working list for this loop
+            with open('bit.s', 'a') as file:
+                file.write(eps)
     regx[x] = ( sorted(eps, key=lambda x: x[1]) [:-top] )   #regx['S0xE0x'] = (file-name1.mp4, bitrate,   sorted(eps, by key x[1])
                                                                               #file-name2.mp4, bitrate,   in this case x = ( i, bitrate(i) )
                                                                               #file-name3.mp4, bitrate)   from above
@@ -82,11 +84,13 @@ for ep in regx:
     for i in original:
         if ep in i:
             s_bitrate = str(regx[ep])
-            pass1 = 'ffmpeg -hide_banner -loglevel quiet -stats -an -sn -y -i \"' + pydir + '\\' + i + '\" -c:v libx265 -b:v ' + s_bitrate + 'K -x265-params pass=1 -f null NUL'
+            pass1 = str(
+                'ffmpeg -hide_banner -loglevel quiet -stats -an -sn -y -i \"' + pydir + '\\' + i + '\" -c:v libx265 -b:v ' + s_bitrate + 'K -x265-params pass=1 -f null NUL'
+            )
             pass2 = str(
-                'ffmpeg -hide_banner -loglevel quiet -stats -y -i \"' + pydir + '\\' + i + '\" -c:v libx265 -b:v ' + s_bitrate + 'K -x265-params pass=2 -c:a libopus -b:a 192k \"' + pydir + '\\new\\' + i + '\"')
-            with open('bit.list', 'w') as file:
-                file.write('\n\n\nBitrate for '+ i + ' is: ' + s_bitrate)
+                'ffmpeg -hide_banner -loglevel quiet -stats -y -i \"' + pydir + '\\' + i + '\" -c:v libx265 -b:v ' + s_bitrate + 'K -x265-params pass=2 -c:a libopus -b:a 192k \"' + pydir + '\\new\\' + i + '\"'
+            )
+            print('\n\n\nBitrate for '+ i + ' is: ' + s_bitrate)
             print('\nRunning with command:\n'+pass1+'\n\n')
             os.system(pass1)
             print('\nRunning with command:\n'+pass2+'\n\n')
