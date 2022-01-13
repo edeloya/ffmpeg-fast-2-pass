@@ -50,7 +50,7 @@ for file in original:                                                       #spl
         vcodec='libx265',
         preset='slow',
         crf='22'
-        ).run(overwrite=True)
+        ).run(overwrite_output=True)
 
     os.chdir('..\\new')
     shutil.rmtree(pydir + '\\tmp')
