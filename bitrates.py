@@ -34,9 +34,9 @@ for file in original:                                                       #spl
     for i in dirlist:
         eps.append( (i, bitrate(i)) )                                       #add em to working list for this loop
     delet = ( sorted(eps, key=lambda x: x[1]) [:-top] )                     #regx['S0xE0x'] = (file-name1.mp4, bitrate,   sorted(eps, by key x[1])
-                                                                                          #file-name2.mp4, bitrate,   in this case x = ( i, bitrate(i) )
-                                                                                          #file-name3.mp4, bitrate)   from above
-                                                                                          #asc sorted by bitrate at [:-3]
+                                                                                              #file-name2.mp4, bitrate,   in this case x = ( i, bitrate(i) )
+                                                                                              #file-name3.mp4, bitrate)   from above
+                                                                                              #asc sorted by bitrate at [:-3]
     for i in delet:
         os.remove(i[0])                                                     #remove all but the top X segments
         eps.remove(i)
