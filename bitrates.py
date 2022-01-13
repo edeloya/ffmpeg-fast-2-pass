@@ -1,14 +1,13 @@
-import os, subprocess, re, collections, pprint, ffmpeg, statistics
-from pymkv import MKVFile
+import os, shutil, ffmpeg, statistics
 
-def bitrate(X):                                                         #parse file BITRATE
+def bitrate(X):                                                             #parse file BITRATE
     return int(ffmpeg.probe(X)['format']['bit_rate']) // 1000
 
-def gather(ext='mkv'):                                                  #checks for EXT, creates tmp directory for working files
+def gather(ext='mkv'):                                                      #checks for EXT, creates tmp directory for working files
     dirlist.clear()
-    for i in os.listdir():
-        if i.endswith(ext):
-            dirlist.append(i)
+    for file in os.listdir():
+        if file.endswith(ext):
+            dirlist.append(file)
 
 def tmpcheck(x='tmp'):
     if os.path.isdir(x) == False:
@@ -17,14 +16,14 @@ def tmpcheck(x='tmp'):
 pydir = os.path.dirname(os.path.abspath(__name__))
 os.chdir(pydir)
 original, dirlist, eps = [], [], []
-top = 3                                                                 #uses the top # of samples
+top = 3                                                                     #uses the top # of samples
 
 tmpcheck()
 tmpcheck('new')
-gather()                                                                #ls the directory
-original = dirlist[:]                                                   #[:] Slice Operator
+gather()                                                                    #ls the directory
+original = dirlist[:]                                                       #[:] Slice Operator
         
-for file in original:                                                   #splits into copies of 60s slices
+for file in original:                                                       #splits into copies of 60s slices
     segment = str(
         'ffmpeg -n -hide_banner -loglevel quiet -stats -i "' + file + '" -map 0 -c copy -f segment -segment_time 60 -reset_timestamps 1 ".\\tmp\\%03d-' + file + '"'
     )
@@ -33,35 +32,35 @@ for file in original:                                                   #splits 
     gather()
     
     for i in dirlist:
-        eps.append( (i, bitrate(i)) )                                   #add em to working list for this loop
-    delet = ( sorted(eps, key=lambda x: x[1]) [:-top] )                 #regx['S0xE0x'] = (file-name1.mp4, bitrate,   sorted(eps, by key x[1])
-                                                                                      #file-name2.mp4, bitrate,   in this case x = ( i, bitrate(i) )
-                                                                                      #file-name3.mp4, bitrate)   from above
-                                                                                      #asc sorted by bitrate at [:-3]
+        eps.append( (i, bitrate(i)) )                                       #add em to working list for this loop
+    delet = ( sorted(eps, key=lambda x: x[1]) [:-top] )                     #regx['S0xE0x'] = (file-name1.mp4, bitrate,   sorted(eps, by key x[1])
+                                                                                          #file-name2.mp4, bitrate,   in this case x = ( i, bitrate(i) )
+                                                                                          #file-name3.mp4, bitrate)   from above
+                                                                                          #asc sorted by bitrate at [:-3]
     for i in delet:
-        os.remove(i)                                                    #remove all but the top X segments
+        os.remove(i[0])                                                     #remove all but the top X segments
         eps.remove(i)
         
     gather()
     
-    for ep in dirlist:
-        infile = ffmpeg.input(ep)
-        infile.video.output(
-        '..\\new\\'+ep,                                              #filename
-        vcodec='libx265',
-        preset='slow',
-        crf='22'
-        ).run(overwrite_output=None)
+    # for ep in dirlist:
+    #     infile = ffmpeg.input(ep)
+    #     infile.video.output(
+    #     '..\\new\\'+ep,                                                   #filename
+    #     vcodec='libx265',
+    #     preset='slow',
+    #     crf='22'
+    #     ).run()
 
     os.chdir('..\\new')
-    os.remove('..\\tmp')
+    shutil.rmtree(pydir + '\\tmp')
     gather()
     
     for i in dirlist:
-        eps.append( (i, bitrate(i)) )                                 #make a list of every S0XE0X episode temp' bitrate        
+        eps.append( (i, bitrate(i)) )                                       #make a list of every S0XE0X episode temp' bitrate        
         os.remove(i)
-
-    nicebitrate = int(statistics.mean(eps))+100                           #avg bitrate for top 3 temp, for this episode
+    
+    nicebitrate = str( int( statistics.mean( [b for e,b in eps] ) )+100 )   #avg bitrate for top 3 temp, for this episode
     eps.clear()
     
     os.chdir('..')
