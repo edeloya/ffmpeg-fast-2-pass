@@ -30,7 +30,7 @@ for file in original:                                                       #spl
     os.system(segment)
     os.chdir('tmp')
     gather()
-    
+
     for i in dirlist:
         eps.append( (i, bitrate(i)) )                                       #add em to working list for this loop
     delet = ( sorted(eps, key=lambda x: x[1]) [:-top] )                     #regx['S0xE0x'] = (file-name1.mp4, bitrate,   sorted(eps, by key x[1])
@@ -40,9 +40,9 @@ for file in original:                                                       #spl
     for i in delet:
         os.remove(i[0])                                                     #remove all but the top X segments
         eps.remove(i)
-        
+
     gather()
-    
+
     for ep in dirlist:
         infile = ffmpeg.input(ep)
         infile.video.output(
@@ -52,16 +52,15 @@ for file in original:                                                       #spl
         crf='22'
         ).run(overwrite_output=True)
 
-    os.chdir('..\\new')
+    os.chdir('.\\tmp\\')
     gather()
-    
+
     for i in dirlist:
-        eps.append( (i, bitrate(i)) )                                       #make a list of every S0XE0X episode temp' bitrate        
-        os.remove(i)
-    
+        eps.append( (i, bitrate(i)) )                                       #make a list of every S0XE0X episode temp' bitrate
+
     nicebitrate = str( int( statistics.mean( [b for e,b in eps] ) )+100 )   #avg bitrate for top 3 temp, for this episode
     eps.clear()
-    
+
     os.chdir('..')
 
     for i in original:
