@@ -43,14 +43,14 @@ for file in original:                                                       #spl
         
     gather()
     
-    # for ep in dirlist:
-    #     infile = ffmpeg.input(ep)
-    #     infile.video.output(
-    #     '..\\new\\'+ep,                                                   #filename
-    #     vcodec='libx265',
-    #     preset='slow',
-    #     crf='22'
-    #     ).run()
+    for ep in dirlist:
+        infile = ffmpeg.input(ep)
+        infile.video.output(
+        '..\\new\\'+ep,                                                   #filename
+        vcodec='libx265',
+        preset='slow',
+        crf='22'
+        ).run()
 
     os.chdir('..\\new')
     shutil.rmtree(pydir + '\\tmp')
