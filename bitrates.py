@@ -46,7 +46,7 @@ for file in original:                                                       #spl
     for ep in dirlist:
         infile = ffmpeg.input(ep)
         infile.video.output(
-        '.\\tmp\\'+ep,                                                #filename
+        '.\\tmp\\'+ep,                                                     #filename
         vcodec='libx265',
         preset='slow',
         crf='22'
@@ -59,9 +59,8 @@ for file in original:                                                       #spl
         eps.append( (i, bitrate(i)) )                                       #make a list of every S0XE0X episode temp' bitrate
 
     nicebitrate = str( int( statistics.mean( [b for e,b in eps] ) )+100 )   #avg bitrate for top 3 temp, for this episode
-    eps.clear()
 
-    os.chdir('..')
+    os.chdir(pydir)
 
     for i in original:
         pass1 = str(
