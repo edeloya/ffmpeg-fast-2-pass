@@ -62,18 +62,17 @@ for file in original:                                                       #spl
 
     os.chdir(pydir)
 
-    for i in original:
-        pass1 = str(
-            'ffmpeg -n -hide_banner -loglevel quiet -stats -an -sn -i "' + i + '" -c:v libx265 -b:v ' + nicebitrate + 'K -x265-params pass=1 -f null NUL'
-        )
-        pass2 = str(
-            'ffmpeg -n -hide_banner -loglevel quiet -stats -i "' + i + '" -c:v libx265 -b:v ' + nicebitrate + 'K -x265-params pass=2 -c:a libopus -b:a 160k ".\\new\\' + i + '"'
-        )
-        print('\n\n\nBitrate for '+ i + ' is: ' + nicebitrate + 'K')
-        print('\nRunning with command:\n'+pass1+'\n\n')
-        os.system(pass1)
-        print('\nRunning with command:\n'+pass2+'\n\n')
-        os.system(pass2)        
+    pass1 = str(
+        'ffmpeg -n -hide_banner -loglevel quiet -stats -an -sn -i "' + file + '" -c:v libx265 -b:v ' + nicebitrate + 'K -x265-params pass=1 -f null NUL'
+    )
+    pass2 = str(
+        'ffmpeg -n -hide_banner -loglevel quiet -stats -i "' + file + '" -c:v libx265 -b:v ' + nicebitrate + 'K -x265-params pass=2 -c:a libopus -b:a 160k ".\\new\\' + file + '"'
+    )
+    print('\n\n\nBitrate for '+ i + ' is: ' + nicebitrate + 'K')
+    print('\nRunning with command:\n'+pass1+'\n\n')
+    os.system(pass1)
+    print('\nRunning with command:\n'+pass2+'\n\n')
+    os.system(pass2)        
+    shutil.rmtree(pydir + '\\tmp')
 
-shutil.rmtree(pydir + '\\tmp')
 os.system("pause")
