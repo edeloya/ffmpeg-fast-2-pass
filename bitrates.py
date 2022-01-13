@@ -46,14 +46,13 @@ for file in original:                                                       #spl
     for ep in dirlist:
         infile = ffmpeg.input(ep)
         infile.video.output(
-        '..\\new\\'+ep,                                                   #filename
+        '.\\tmp\\'+ep,                                                #filename
         vcodec='libx265',
         preset='slow',
         crf='22'
         ).run(overwrite_output=True)
 
     os.chdir('..\\new')
-    shutil.rmtree(pydir + '\\tmp')
     gather()
     
     for i in dirlist:
@@ -78,4 +77,5 @@ for file in original:                                                       #spl
         print('\nRunning with command:\n'+pass2+'\n\n')
         os.system(pass2)        
 
+shutil.rmtree(pydir + '\\tmp')
 os.system("pause")
