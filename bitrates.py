@@ -53,7 +53,7 @@ for file in original:                                                       #spl
         ).run(overwrite_output=True)
 
     os.chdir('..\\new')
-    # shutil.rmtree(pydir + '\\tmp')
+    shutil.rmtree(pydir + '\\tmp')
     gather()
     
     for i in dirlist:
