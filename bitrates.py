@@ -54,8 +54,8 @@ for file in original:                                                       #spl
         ).run(overwrite_output=True)
 
     os.chdir('.\\tmp\\')
-    gather()
     eps.clear()
+    gather()
     
     for i in dirlist:
         eps.append( (i, bitrate(i)) )                                       #make a list of every S0XE0X episode temp' bitrate
