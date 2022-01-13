@@ -42,7 +42,8 @@ for file in original:                                                       #spl
         eps.remove(i)
 
     gather()
-
+    tmpcheck()
+    
     for ep in dirlist:
         infile = ffmpeg.input(ep)
         infile.video.output(
