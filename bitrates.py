@@ -52,7 +52,7 @@ for file in original:                                                       #spl
             vcodec='libx265', 
             preset='slow', 
             crf='24'
-        ).run()
+        ).run(overwrite_output=True)
 
     os.chdir('.\\tmp\\')
     eps.clear()
@@ -71,7 +71,7 @@ for file in original:                                                       #spl
         'ffmpeg -n -hide_banner -loglevel quiet -stats -an -sn -i \"{}" -c:v libx265 -b:v {}K -maxrate {}K -bufsize {}M -x265-params pass=1 -f null NUL'.format(file, avgbitrate, maxrate, bufsize)
     )
     pass2 = str(
-        'ffmpeg -n -hide_banner -loglevel quiet -stats -i \"{}" -c:v libx265 -b:v {}K -maxrate {}K -x265-params pass=2 -c:a libopus -b:a 160k ".\\new\\{}"'.format(file, avgbitrate, maxrate, bufsize, file)
+        'ffmpeg -n -hide_banner -loglevel quiet -stats -i \"{}" -c:v libx265 -b:v {}K -maxrate {}K -bufsize {}M -x265-params pass=2 -c:a libopus -b:a 160k ".\\new\\{}"'.format(file, avgbitrate, maxrate, bufsize, file)
     )
     print('\n\n\nBitrate for {} is: {}K'.format(file, avgbitrate))
     print('\nRunning with command:\n{}\n\n'.format(pass1))
