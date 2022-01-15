@@ -45,14 +45,14 @@ for file in original:                                                       #spl
     # gather()
     tmpcheck()
     
-    for ep in dirlist:
-        infile = ffmpeg.input(ep)
-        infile.video.output(
-            '.\\tmp\\'+ep, 
-            vcodec='libx265', 
-            preset='slow', 
-            crf='24'
-        ).run(overwrite_output=True)
+    # for ep in dirlist:
+    #     infile = ffmpeg.input(ep)
+    #     infile.video.output(
+    #         '.\\tmp\\'+ep, 
+    #         vcodec='libx265', 
+    #         preset='slow', 
+    #         crf='24'
+    #     ).run()
 
     os.chdir('.\\tmp\\')
     eps.clear()
@@ -61,8 +61,7 @@ for file in original:                                                       #spl
     for i in dirlist:
         eps.append( (i, bitrate(i)) )                                       #make a list of every S0XE0X episode temp' bitrate
     
-    pprint.pprint(eps)    
-    maxrate = ( sorted(eps, key=lambda x: x[1]) [top:] )
+    maxrate = ( sorted(eps, key=lambda x: x[1]) [top:] )[-1][1]
     avgbitrate = str( int( statistics.mean( [b for e,b in eps] ) )+100 )   #avg bitrate for top x temp, for this episode
 
     os.chdir(pydir)
@@ -75,9 +74,9 @@ for file in original:                                                       #spl
     )
     print('\n\n\nBitrate for '+ i + ' is: ' + avgbitrate + 'K')
     print('\nRunning with command:\n'+pass1+'\n\n')
-    # os.system(pass1)
+    os.system(pass1)
     print('\nRunning with command:\n'+pass2+'\n\n')
-    # os.system(pass2)        
+    os.system(pass2)        
     # shutil.rmtree(pydir + '\\tmp')
 
 os.system("pause")
