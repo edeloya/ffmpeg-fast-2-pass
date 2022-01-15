@@ -18,12 +18,12 @@ os.chdir(pydir)
 original, dirlist, eps = [], [], []
 top = 5                                                                     #uses the top # of samples
 
-tmpcheck()
-tmpcheck('new')
 gather()                                                                    #ls the directory
 original = dirlist[:]                                                       #[:] Slice Operator
         
 for file in original:                                                       #splits into copies of 60s slices
+    tmpcheck()
+    tmpcheck('new')
     segment = str(
         'ffmpeg -n -hide_banner -loglevel quiet -stats -i \"{}\" -map 0 -c copy -f segment -segment_time 60 -reset_timestamps 1 \".\\tmp\\%03d-{}\"'.format(file,file)
     )
@@ -38,9 +38,9 @@ for file in original:                                                       #spl
                                                                                               #file-name2.mp4, bitrate,   in this case x = ( i, bitrate(i) )
                                                                                               #file-name3.mp4, bitrate)   from above
                                                                                               #asc sorted by bitrate at [:-3]
-    # for i in delet:
-    #     os.remove(i[0])                                                     #remove all EXCEPT the top X segments
-    #     eps.remove(i)
+    for i in delet:
+        os.remove(i[0])                                                     #remove all EXCEPT the top X segments
+        eps.remove(i)
         
     gather()
     tmpcheck()
@@ -61,7 +61,7 @@ for file in original:                                                       #spl
     for i in dirlist:
         eps.append( (i, bitrate(i)) )                                       #make a list of every S0XE0X episode temp' bitrate
     
-    avgbitrate = int( statistics.mean( [b for e,b in eps] ) )+100   #avg bitrate for top x temp, for this episode
+    avgbitrate = int( statistics.mean( [b for e,b in eps] ) )   #avg bitrate for top x temp, for this episode
     maxrate = sorted(eps, key=lambda x: x[1])[-1][1]
     bufsize = round( maxrate / 500, 2 )
 
