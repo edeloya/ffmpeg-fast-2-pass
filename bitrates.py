@@ -34,25 +34,25 @@ for file in original:                                                       #spl
     for i in dirlist:
         eps.append( (i, bitrate(i)) )                                       #add em to working list for this loop
     
-    # delet = ( sorted(eps, key=lambda x: x[1]) [:-top] )                     #regx['S0xE0x'] = (file-name1.mp4, bitrate,   sorted(eps, by key x[1])
-    #                                                                                           #file-name2.mp4, bitrate,   in this case x = ( i, bitrate(i) )
-    #                                                                                           #file-name3.mp4, bitrate)   from above
-    #                                                                                           #asc sorted by bitrate at [:-3]
-    # for i in delet:
-    #     os.remove(i[0])                                                     #remove all EXCEPT the top X segments
-    #     eps.remove(i)
+    delet = ( sorted(eps, key=lambda x: x[1]) [:-top] )                     #regx['S0xE0x'] = (file-name1.mp4, bitrate,   sorted(eps, by key x[1])
+                                                                                              #file-name2.mp4, bitrate,   in this case x = ( i, bitrate(i) )
+                                                                                              #file-name3.mp4, bitrate)   from above
+                                                                                              #asc sorted by bitrate at [:-3]
+    for i in delet:
+        os.remove(i[0])                                                     #remove all EXCEPT the top X segments
+        eps.remove(i)
         
-    # gather()
+    gather()
     tmpcheck()
     
-    # for ep in dirlist:
-    #     infile = ffmpeg.input(ep)
-    #     infile.video.output(
-    #         '.\\tmp\\'+ep, 
-    #         vcodec='libx265', 
-    #         preset='slow', 
-    #         crf='24'
-    #     ).run()
+    for ep in dirlist:
+        infile = ffmpeg.input(ep)
+        infile.video.output(
+            '.\\tmp\\'+ep, 
+            vcodec='libx265', 
+            preset='slow', 
+            crf='24'
+        ).run()
 
     os.chdir('.\\tmp\\')
     eps.clear()
@@ -61,22 +61,23 @@ for file in original:                                                       #spl
     for i in dirlist:
         eps.append( (i, bitrate(i)) )                                       #make a list of every S0XE0X episode temp' bitrate
     
-    maxrate = ( sorted(eps, key=lambda x: x[1]) [top:] )[-1][1]
     avgbitrate = str( int( statistics.mean( [b for e,b in eps] ) )+100 )   #avg bitrate for top x temp, for this episode
+    maxrate = ( sorted(eps, key=lambda x: x[1]) [top:] )[-1][1]
+    bufsize = round( maxrate / 500, 2 )
 
     os.chdir(pydir)
 
     pass1 = str(
-        'ffmpeg -n -hide_banner -loglevel quiet -stats -an -sn -i \"{}" -c:v libx265 -b:v {}K -maxrate {}K -x265-params pass=1 -f null NUL'.format(file, avgbitrate, maxrate)
+        'ffmpeg -n -hide_banner -loglevel quiet -stats -an -sn -i \"{}" -c:v libx265 -b:v {}K -maxrate {}K -bufsize {}M -x265-params pass=1 -f null NUL'.format(file, avgbitrate, maxrate, bufsize)
     )
     pass2 = str(
-        'ffmpeg -n -hide_banner -loglevel quiet -stats -i \"{}" -c:v libx265 -b:v {}K -maxrate {}K -x265-params pass=2 -c:a libopus -b:a 160k ".\\new\\{}"'.format(file, avgbitrate, maxrate, file)
+        'ffmpeg -n -hide_banner -loglevel quiet -stats -i \"{}" -c:v libx265 -b:v {}K -maxrate {}K -x265-params pass=2 -c:a libopus -b:a 160k ".\\new\\{}"'.format(file, avgbitrate, maxrate, bufsize, file)
     )
-    print('\n\n\nBitrate for '+ i + ' is: ' + avgbitrate + 'K')
-    print('\nRunning with command:\n'+pass1+'\n\n')
+    print('\n\n\nBitrate for {} is: {}K'.format(file, avgbitrate))
+    print('\nRunning with command:\n{}\n\n'.format(pass1))
     os.system(pass1)
-    print('\nRunning with command:\n'+pass2+'\n\n')
+    print('\nRunning with command:\n{}\n\n'.format(pass2))
     os.system(pass2)        
-    # shutil.rmtree(pydir + '\\tmp')
+    shutil.rmtree(pydir + '\\tmp')
 
 os.system("pause")
