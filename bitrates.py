@@ -43,7 +43,7 @@ for file in original:                                                       #spl
     #     eps.remove(i)
         
     # gather()
-    # tmpcheck()
+    tmpcheck()
     
     for ep in dirlist:
         infile = ffmpeg.input(ep)
