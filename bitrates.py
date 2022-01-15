@@ -45,14 +45,14 @@ for file in original:                                                       #spl
     gather()
     tmpcheck()
     
-    # for ep in dirlist:
-    #     infile = ffmpeg.input(ep)
-    #     infile.video.output(
-    #         '.\\tmp\\'+ep, 
-    #         vcodec='libx265', 
-    #         preset='slow', 
-    #         crf='24'
-    #     ).run(overwrite_output=True)
+    for ep in dirlist:
+        infile = ffmpeg.input(ep)
+        infile.video.output(
+            '.\\tmp\\'+ep, 
+            vcodec='libx265', 
+            preset='slow', 
+            crf='24'
+        ).run(overwrite_output=True)
 
     os.chdir('.\\tmp\\')
     eps.clear()
