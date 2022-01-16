@@ -25,34 +25,34 @@ for file in original:                                                       #spl
     tmpcheck()
     tmpcheck('new')
     segment = str(
-        'ffmpeg -n -hide_banner -loglevel quiet -stats -i \"{}\" -map 0 -c copy -f segment -segment_time 60 -reset_timestamps 1 \".\\tmp\\%03d-{}\"'.format(file,file)
+        'ffmpeg -n -hide_banner -stats -i \"{}\" -map 0 -c copy -f segment -segment_time 60 -reset_timestamps 1 \".\\tmp\\%03d-{}\"'.format(file,file)
     )
     os.system(segment)
     os.chdir('tmp')
     gather()
-    
+
     for i in dirlist:
         eps.append( (i, bitrate(i)) )                                       #add em to working list for this loop
-    
-    delet = ( sorted(eps, key=lambda x: x[1]) [:-top] )                     #regx['S0xE0x'] = (file-name1.mp4, bitrate,   sorted(eps, by key x[1])
-                                                                                              #file-name2.mp4, bitrate,   in this case x = ( i, bitrate(i) )
-                                                                                              #file-name3.mp4, bitrate)   from above
-                                                                                              #asc sorted by bitrate at [:-3]
-    for i in delet:
+
+    tmp_sorted = [ x[1] for x in eps]
+    minrate = numpy.quantile( tmp_sorted, 0.25 )                                                                                           #file-name2.mp4, bitrate,   in this case x = ( i, bitrate(i) )
+                                                                                           #file-name3.mp4, bitrate)   from above
+                                                                                           #asc sorted by bitrate at [:-3]
+    for i in eps[:-top]:
         os.remove(i[0])                                                     #remove all EXCEPT the top X segments
         eps.remove(i)
-        
-    gather()
+
+    eps.clear()
     tmpcheck()
-    
+    gather()
+
+    #Here you're in the first "./tmp"
     for ep in dirlist:
-        infile = ffmpeg.input(ep)
-        infile.video.output(
-            '.\\tmp\\'+ep, 
-            vcodec='libx265', 
-            preset='slow', 
-            crf='24'
-        ).run(overwrite_output=True)
+        mojostop__= str(
+        'ffmpeg -n -hide_banner -loglevel quiet -stats -an -sn -i \"{}\" -c:v libx265 -crf 24 -preset slow \".\\tmp\\{}\"'.format(ep,ep)
+    )
+        print('\nRunning with command:\n{}\n\n'.format(mojostop__))
+        os.system(mojostop__)
 
     os.chdir('.\\tmp\\')
     eps.clear()
@@ -60,8 +60,8 @@ for file in original:                                                       #spl
     
     for i in dirlist:
         eps.append( (i, bitrate(i)) )                                       #make a list of every S0XE0X episode temp' bitrate
-    
-    avgbitrate = int( statistics.mean( [b for e,b in eps] ) )   #avg bitrate for top x temp, for this episode
+
+    avgbitrate = numpy.quantile( [b for e,b in eps] , 0.5 )   #avg bitrate for top x temp, for this episode
     maxrate = sorted(eps, key=lambda x: x[1])[-1][1]
     bufsize = round( maxrate / 500, 2 )
 
