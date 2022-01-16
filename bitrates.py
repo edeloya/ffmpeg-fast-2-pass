@@ -43,7 +43,7 @@ for file in original:
             eps.append( (i, bitrate(i)) )                                       #add em to working list for this loop
 
         eps = sorted(eps, key=lambda x: x[1])
-        log(pprint.pprint(eps))
+        log(pprint.pformat(eps, indent=2))
 
         for i in eps[:-top]:
             os.remove(i[0])                                                     #remove all EXCEPT the top X segments
@@ -65,7 +65,7 @@ for file in original:
 
         eps = sorted(eps, key=lambda x: x[1])
         bits = [b for a,b in eps]
-        log(pprint.pprint(eps))
+        log(pprint.pformat(eps, indent=2))
 
         minrate = bits[0]
         maxrate = bits[-1]
