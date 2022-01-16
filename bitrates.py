@@ -25,7 +25,7 @@ original = dirlist[:]                                                       #[:]
 for file in original:                                                       #splits into copies of 60s slices
     tmpcheck()
     tmpcheck('new')
-    segment = str(
+    segment = (
         'ffmpeg -n -hide_banner -loglevel quiet -stats -i \"{}\" -map 0 -c copy -f segment -segment_time 60 -reset_timestamps 1 \".\\tmp\\%03d-{}\"'.format(file,file)
     )
     print('Splitting {}..'.format(file))
@@ -74,13 +74,15 @@ for file in original:                                                       #spl
     )
 
     print('\n\n\nBitrate for {} is: {}K'.format(file, avgbitrate))
-    
+
     print('\nRunning with command:\n{}\n\n'.format(pass1))
     os.system(pass1)
 
     print('\nRunning with command:\n{}\n\n'.format(pass2))
-    os.system(pass2)        
+    os.system(pass2)
 
+    for var in [minrate, maxrate, bufsize, avgbitrate, eps]:
+        var.clear()
     shutil.rmtree(pydir + '\\tmp')
 
 os.system("pause")
