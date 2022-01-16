@@ -18,8 +18,6 @@ os.chdir(pydir)
 original, dirlist, eps = [], [], []
 top = 4                                                                     #uses the top # of samples
 
-tmpcheck()
-tmpcheck('new')
 gather()                                                                    #ls the directory
 original = dirlist[:]                                                       #[:] Slice Operator
         
@@ -27,7 +25,7 @@ for file in original:                                                       #spl
     tmpcheck()
     tmpcheck('new')
     segment = str(
-        'ffmpeg -n -hide_banner -loglevel quiet -stats -i \"{}\" -map 0 -c copy -f segment -segment_time 60 -reset_timestamps 1 \".\\tmp\\%03d-{}\"'.format(file,file)
+        'ffmpeg -n -hide_banner -stats -i \"{}\" -map 0 -c copy -f segment -segment_time 60 -reset_timestamps 1 \".\\tmp\\%03d-{}\"'.format(file,file)
     )
     os.system(segment)
     os.chdir('tmp')
