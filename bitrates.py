@@ -18,6 +18,7 @@ os.chdir(pydir)
 original, dirlist, eps = [], [], []
 top = 4                                                                     #uses the top # of samples
 
+
 gather()                                                                    #ls the directory
 original = dirlist[:]                                                       #[:] Slice Operator
         
@@ -25,7 +26,7 @@ for file in original:                                                       #spl
     tmpcheck()
     tmpcheck('new')
     segment = str(
-        'ffmpeg -n -hide_banner -stats -i \"{}\" -map 0 -c copy -f segment -segment_time 60 -reset_timestamps 1 \".\\tmp\\%03d-{}\"'.format(file,file)
+        'ffmpeg -n -hide_banner -loglevel quiet -stats -i \"{}\" -map 0 -c copy -f segment -segment_time 60 -reset_timestamps 1 \".\\tmp\\%03d-{}\"'.format(file,file)
     )
     os.system(segment)
     os.chdir('tmp')
@@ -54,12 +55,13 @@ for file in original:                                                       #spl
     
     for i in dirlist:
         eps.append( (i, bitrate(i)) )                                       #make a list of every S0XE0X episode temp' bitrate
-    eps = sorted(eps, key=lambda x: x[1])                                   #sort by size
+
+    eps = [b for a,b in sorted(eps, key=lambda x: x[1])]
     
-    minrate = eps[0][1]
-    maxrate = eps[-1][1]
+    minrate = eps[0]
+    maxrate = eps[-1]
     bufsize = round( maxrate / 500, 2 )
-    avgbitrate = statistics.mean( [b for e,b in eps] )   #avg bitrate for top x temp, for this episode
+    avgbitrate = statistics.mean( eps )   #avg bitrate for top x temp, for this episode
 
     os.chdir(pydir)
 
