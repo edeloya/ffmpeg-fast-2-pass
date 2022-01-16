@@ -28,6 +28,7 @@ for file in original:                                                       #spl
     segment = str(
         'ffmpeg -n -hide_banner -loglevel quiet -stats -i \"{}\" -map 0 -c copy -f segment -segment_time 60 -reset_timestamps 1 \".\\tmp\\%03d-{}\"'.format(file,file)
     )
+    print('Splitting {}..'.format(file))
     os.system(segment)
     os.chdir('tmp')
     tmpcheck()
