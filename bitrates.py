@@ -21,7 +21,7 @@ top = 4                                                                     #use
 
 gather()                                                                    #ls the directory
 original = dirlist[:]                                                       #[:] Slice Operator
-        
+
 for file in original:                                                       #splits into copies of 60s slices
     tmpcheck()
     tmpcheck('new')
@@ -38,7 +38,7 @@ for file in original:                                                       #spl
         eps.append( (i, bitrate(i)) )                                       #add em to working list for this loop
 
     eps = sorted(eps, key=lambda x: x[1])
-    
+
     for i in eps[:-top]:
         os.remove(i[0])                                                     #remove all EXCEPT the top X segments
         eps.remove(i)
