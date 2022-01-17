@@ -23,17 +23,18 @@ original, dirlist, eps = [], [], []
 os.chdir(pydir)
 top = 4                                                                     #uses the top # of samples
 
-gather()                                                                    #ls the directory
-tmpcheck()     
+gather()
 tmpcheck('new')
 original = dirlist[:]                                                       #[:] Slice Operator
 
 for file in original:
     if file not in os.listdir('new'):
+        tmpcheck()
         segment = (
             'ffmpeg -n -hide_banner -loglevel quiet -stats -i \"{}\" -map 0 -c copy -f segment -segment_time 60 -reset_timestamps 1 \".\\tmp\\%03d-{}\"'.format(file,file)
         )
         log('Splitting {}..'.format(file))
+        print('Splitting {}..'.format(file))
         os.system(segment)
         os.chdir('tmp')
         tmpcheck()
@@ -43,6 +44,7 @@ for file in original:
             eps.append( (i, bitrate(i)) )                                       #add em to working list for this loop
 
         eps = sorted(eps, key=lambda x: x[1])
+        print(pprint.pformat(eps, indent=2))
         log(pprint.pformat(eps, indent=2))
 
         for i in eps[:-top]:
@@ -53,6 +55,7 @@ for file in original:
             mojostop__= str(
             'ffmpeg -n -hide_banner -loglevel quiet -stats -an -sn -i \"{}\" -c:v libx265 -crf 24 -preset slow \".\\tmp\\{}\"'.format(ep[0],ep[0])
         )
+            print('Running with command:\n{}'.format(mojostop__))
             log('Running with command:\n{}'.format(mojostop__))
             os.system(mojostop__)
 
@@ -66,6 +69,7 @@ for file in original:
         eps = sorted(eps, key=lambda x: x[1])
         bits = [b for a,b in eps]
         log(pprint.pformat(eps, indent=2))
+        print(pprint.pformat(eps, indent=2))
 
         minrate = bits[0]
         maxrate = bits[-1]
@@ -81,11 +85,14 @@ for file in original:
             'ffmpeg -n -hide_banner -loglevel quiet -stats -i \"{}" -c:v libx265 -b:v {}K -minrate {}K -maxrate {}K -bufsize {}M -x265-params pass=2 -c:a libopus -b:a 160k ".\\new\\{}"'.format(file, avgbitrate, minrate, maxrate, bufsize, file)
         )
 
+        print('Bitrate for {} is: {}K'.format(file, avgbitrate))
         log('Bitrate for {} is: {}K'.format(file, avgbitrate))
 
+        print('Running with command:\n{}'.format(pass1))
         log('Running with command:\n{}'.format(pass1))
         os.system(pass1)
 
+        print('Running with command:\n{}'.format(pass2))
         log('Running with command:\n{}'.format(pass2))
         os.system(pass2)
 
